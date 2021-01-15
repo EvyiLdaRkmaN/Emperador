@@ -14,22 +14,60 @@ const firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
+let visibleError = false;
 const auth = (event) => {
     event.preventDefault();
+    const form = document.getElementById('form');
     const email = document.getElementById('email');
-    console.log(email.value);
+    console.log('email--',email.value);
     const password = document.getElementById('password');
-    console.log(password.value);
-    firebase.auth().createUserWithEmailAndPassword(email.value, password.value)
+
+    const p = document.createElement('p');
+    p.className = 'text-danger';
+    p.id = 'messageError';
+
+    if (email.value == '' || password.value == '') {
+
+        if (!visibleError) {
+            p.textContent = 'Llene todos los campos';
+            form.append(p);
+            visibleError = true;
+        } else {
+            var error = document.getElementById('messageError');
+            error.textContent = 'Llene todos los campos';
+        }
+        return;
+    }
+    firebase.auth().signInWithEmailAndPassword(email.value, password.value)
         .then((user) => {
             // Signed in
             // ...
-            console.log(`then-->${user}`);
+            console.log('then--->',user);
+            window.location.href = 'src/pages/home.html';
         })
         .catch((error) => {
             var errorCode = error.code;
-            var errorMessage = error.message;
             // ..
-            console.log(`error-->${erro}`);
+            if (!visibleError) {
+                form.append(p);
+                visibleError = true;
+            }
+            console.log(`error-->`, error);
+            var error = document.getElementById('messageError');
+            error.textContent = errorMessage(errorCode);
+            
         });
+}
+
+
+
+const errorMessage = (code) => {
+    switch (code) {
+        case 'auth/wrong-password':
+            return 'Contraseña o email no valido'
+        case 'auth/invalid-email':
+            return 'Email no valido'
+        default:
+            return `Error, codigo: ${code}`;
+    }
 }
