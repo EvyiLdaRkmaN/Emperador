@@ -47,3 +47,4 @@ const addProduct = (event) => {
 };
 
 
+const cancel = ()=>window.location.replace('./home.html');
