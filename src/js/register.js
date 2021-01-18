@@ -41,7 +41,8 @@ const register = (event) => {
         .then((user) => {
             // Signed in
             // ...
-            console.log(`then-->${user}`);
+            window.location.href = '../../index.html';
+            
         })
         .catch((error) => {
             var errorCode = error.code;
